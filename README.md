@@ -21,7 +21,7 @@ This centralized GitHub action updates the description of a Pull request with re
       MAIN_COVERAGE: https://<PORTAL_LINK>/openapi/coverage.html?repo=<repo-name>&branch=main&app=${{ inputs.app-name }}
     steps:
         - name: PR body action
-          uses: SatelCreative/satel-update-pr-body@feature/custom-pr-body-action
+          uses: SatelCreative/satel-update-pr-body@1.0.0
           with:       
             app-name: ${{ inputs.app-name }}
             redoc-links: $REDOC_LINKS
