@@ -27,32 +27,22 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Use input parameters
+    - name: Separate redoc links 
       shell: bash
-      run: |
-        echo "App Name: ${{ inputs.app-name }}"
-        echo "ReDoc Links: ${{ inputs.redoc-links }}"
-        echo "Coverage Links: ${{ inputs.coverage-links }}"
-        echo "Badge: ${{ inputs.badge }}"
-        echo "Main Coverage: ${{ inputs.main-coverage }}"
-        echo "Main Badge: ${{ inputs.main-badge }}"
+      env: 
+        REDOC_LINKS: ${{ inputs.redoc-links }}
+        APP_NAME: ${{ inputs.app-name }}
+      run: | 
+        api_links=$(echo "${{ inputs.redoc-links }}" | grep -o '\[${{ inputs.app-name }} - API\]\(([^)]*json)\)'|| echo "-")
+        shopify_links=$(echo "${{ inputs.redoc-links }}" | grep -o '\[${{ inputs.app-name }} - Shopify resource models\]\(([^)]*json)\)' || echo "-")
+        echo "api_link=$api_links" >> $GITHUB_ENV
+        echo "shopify_link=$shopify_links" >> $GITHUB_ENV
 
-    # - name: Separate redoc links 
-    #   shell: bash
-    #   env: 
-    #     REDOC_LINKS: ${{ inputs.redoc-links }}
-    #     APP_NAME: ${{ inputs.app-name }}
-    #   run: | 
-    #     api_links=$(echo "${REDOC_LINKS}" | grep -o '\[${APP_NAME} - API\]\(([^)]*json)\)'|| echo "-")
-    #     shopify_links=$(echo "${REDOC_LINKS}" | grep -o '\[${APP_NAME} - Shopify resource models\]\(([^)]*json)\)' || echo "-")
-    #     echo "api_link=$api_links" >> $GITHUB_ENV
-    #     echo "shopify_link=$shopify_links" >> $GITHUB_ENV
-
-    # - name: Add links in PR description
-    #   uses: myposter-de/update-pr-description-async-action@v1.2.12
-    #   env: 
-    #     SHOPIFY_LINK: ${{ env.shopify_link }}
-    #     API_LINK: ${{ env.api_link }}
-    #   with:
-    #     token: ${{ inputs.github-token }}
-    #     prDescAppend: "|**App**|**Main branch**|**This PR**|**Redoc link**|**Resource models**|\n|----|---|----|----|----|\n| ${{ inputs.app-name }} | [![Coverage](${{ inputs.main-badge }})](${{ inputs.main-coverage }}) | [![Coverage](${{ inputs.badge }})](${{ inputs.coverage-links }}) | ${API_LINK} | ${SHOPIFY_LINK}"
+    - name: Add links in PR description
+      uses: myposter-de/update-pr-description-async-action@v1.2.12
+      env: 
+        SHOPIFY_LINK: ${{ env.shopify_link }}
+        API_LINK: ${{ env.api_link }}
+      with:
+        token: ${{ inputs.github-token }}
+        prDescAppend: "|**App**|**Main branch**|**This PR**|**Redoc link**|**Resource models**|\n|----|---|----|----|----|\n| ${{ inputs.app-name }} | [![Coverage](${{ inputs.main-badge }})](${{ inputs.main-coverage }}) | [![Coverage](${{ inputs.badge }})](${{ inputs.coverage-links }}) | ${API_LINK} | ${SHOPIFY_LINK}"
