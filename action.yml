@@ -1,0 +1,54 @@
+name: Update a Pull request's description
+description: Update a Pull request's description with the coverage and redoc links
+
+inputs:
+  app-name:
+    description: Name of the App
+    required: true
+  redoc-links:
+    description: Redoc links for the PR
+    required: true
+  coverage-links:
+    description: Coverage links for the PR
+    required: true
+  badge:  
+    description: Badge from the PR
+    required: true
+  main-coverage:    
+    description: Coverage from the main branch
+    required: true
+  main-badge: 
+    description: Badge from the main branch
+    required: true
+  github-token:
+    description: GITHUB_TOKEN
+    required: true  
+      
+runs:
+  using: "composite"
+  steps:
+    - name: Separate redoc links 
+      shell: bash
+      env: 
+        REDOC_LINKS: ${{ inputs.redoc-links }}
+        APP_NAME: ${{ inputs.app-name }}
+      run: | 
+        api_links=$(echo "${REDOC_LINKS}" | grep -o '\[${APP_NAME} - API\]\(([^)]*json)\)'|| echo "-")
+        shopify_links=$(echo "${REDOC_LINKS}" | grep -o '\[${APP_NAME} - Shopify resource models\]\(([^)]*json)\)' || echo "-")
+        echo "api_link=$api_links" >> $GITHUB_ENV
+        echo "shopify_link=$shopify_links" >> $GITHUB_ENV
+
+    - name: Add links in PR description
+      uses: myposter-de/update-pr-description-async-action@v1.2.12
+      env: 
+        APP_NAME: ${{ inputs.app-name }}
+        REDOC_LINKS: ${{ inputs.redoc-links }}
+        COVERAGE_LINKS: ${{ inputs.coverage-links }}
+        BADGE: ${{ inputs.badge }}
+        MAIN_COVERAGE: ${{ inputs.main-coverage }}
+        MAIN_BADGE: ${{ inputs.main-badge }}
+        SHOPIFY_LINK: ${{ env.shopify_link }}
+        API_LINK: ${{ env.api_link }}
+      with:
+        token: ${{ inputs.github-token }}
+        prDescAppend: "|**App**|**Main branch**|**This PR**|**Redoc link**|**Resource models**|\n|----|---|----|----|----|\n| ${APP_NAME} | [![Coverage](${MAIN_BADGE})](${MAIN_COVERAGE}) | [![Coverage](${BADGE})](${COVERAGE_LINKS}) | ${API_LINK} | ${SHOPIFY_LINK}"
