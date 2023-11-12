@@ -24,11 +24,11 @@ This centralized GitHub action updates the description of a Pull request with re
           uses: SatelCreative/satel-update-pr-body@feature/custom-pr-body-action
           with:       
             app-name: ${{ inputs.app-name }}
-            redoc-links: ${REDOC_LINKS}
-            coverage-links: ${COVERAGE_LINKS}
-            badge: ${BADGE}
-            main-coverage: ${MAIN_COVERAGE}}
-            main-badge: ${MAIN_BADGE}
+            redoc-links: $REDOC_LINKS
+            coverage-links: $COVERAGE_LINKS
+            badge: $BADGE
+            main-coverage: $MAIN_COVERAGE
+            main-badge: $MAIN_BADGE
             github-token: ${{ secrets.GITHUB_TOKEN }}
    
 ```
