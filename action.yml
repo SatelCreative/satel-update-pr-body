@@ -1,0 +1,42 @@
+name: Update a Pull request's description
+description: Update a Pull request's description with the coverage and redoc links
+
+inputs:
+  app-name:
+    description: Name of the App
+    required: true
+  redoc-links:
+    description: Redoc links for the PR
+    required: true
+  coverage-links:
+    description: Coverage links for the PR
+    required: true
+  badge:  
+    description: Badge from the PR
+    required: true
+  main-coverage:    
+    description: Coverage from the main branch
+    required: true
+  main-badge: 
+    description: Badge from the main branch
+    required: true
+  github-token:
+    description: GITHUB_TOKEN
+    required: true  
+      
+runs:
+  using: "composite"
+  steps:
+    - name: Separate redoc links 
+      shell: bash
+      run: | 
+        api_links=$(echo "${{ inputs.redoc-links }}" | grep -o '\[${{ inputs.app-name }} - API\]\(([^)]*json)\)'|| echo "-")
+        shopify_links=$(echo "${{ inputs.redoc-links }}" | grep -o '\[${{ inputs.app-name }} - Shopify resource models\]\(([^)]*json)\)' || echo "-")
+        echo "api_link=$api_links" >> $GITHUB_ENV
+        echo "shopify_link=$shopify_links" >> $GITHUB_ENV
+
+    - name: Add links in PR description
+      uses: myposter-de/update-pr-description-async-action@v1.2.12
+      with:
+        token: ${{ inputs.github-token }}
+        prDescAppend: "|**App**|**Main branch**|**This PR**|**Redoc link**|**Resource models**|\n|----|---|----|----|----|\n| ${{ inputs.app-name }} | [![Coverage](${{ inputs.main-badge }})](${{ inputs.main-coverage }}) | [![Coverage](${{ inputs.badge }})](${{ inputs.coverage-links }}) | ${{ env.api_link }} | ${{ env.shopify_link }}\n \n"
