@@ -39,4 +39,4 @@ runs:
       uses: myposter-de/update-pr-description-async-action@v1.2.12
       with:
         token: ${{ inputs.github-token }}
-        prDescAppend: "|**App**|**Main branch**|**This PR**|**Redoc link**|**Resource models**|\n|----|---|----|----|----|\n| ${{ inputs.app-name }} | [![Coverage](${{ inputs.main-badge }})](${{ inputs.main-coverage }}) | [![Coverage](${{ inputs.badge }})](${{ inputs.coverage-links }}) | ${{ env.api_link }} | ${{ env.shopify_link }}"
+        prDescAppend: "|**App**|**Main branch**|**This PR**|**Redoc link**|**Resource models**|\n|----|---|----|----|----|\n| ${{ inputs.app-name }} | [![Coverage](${{ inputs.main-badge }})](${{ inputs.main-coverage }}) | [![Coverage](${{ inputs.badge }})](${{ inputs.coverage-links }}) | ${{ env.api_link }} | ${{ env.shopify_link }}\n \n"
