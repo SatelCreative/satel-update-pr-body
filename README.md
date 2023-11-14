@@ -10,25 +10,25 @@ This centralized GitHub action updates the description of a Pull request with re
     needs: [poetry-redoc, generate-badges]
     timeout-minutes: 10
     if: ${{ github.ref != 'refs/heads/main' }}
-    # myposter-de/update-pr-description action doesn't run on a self-hosted runner
+    # myposter-de/update-pr-description action doesn't run on self-hosted runners
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     env:
       REDOC_LINKS: ${{ needs.poetry-redoc.outputs.REDOC_LINKS }}
       COVERAGE_LINKS: ${{ needs.poetry-redoc.outputs.COVERAGE_LINKS }}
       BADGE: ${{ needs.generate-badges.outputs.BADGE }}
-      MAIN_BADGE: https://<PORTAL_LINK>/openapi/<repo-name>/${{ inputs.app-name }}-main.svg 
-      MAIN_COVERAGE: https://<PORTAL_LINK>/openapi/coverage.html?repo=<repo-name>&branch=main&app=${{ inputs.app-name }}
+      MAIN_BADGE: https://<PORTAL_URL>/<repo-name>/${{ inputs.app-name }}-main.svg 
+      MAIN_COVERAGE: https://<PORTAL_URL>/coverage.html?repo=<repo-name>&branch=main&app=${{ inputs.app-name }}
     steps:
         - name: PR body action
           uses: SatelCreative/satel-update-pr-body@1.0.0
           with:       
             app-name: ${{ inputs.app-name }}
-            redoc-links: $REDOC_LINKS
-            coverage-links: $COVERAGE_LINKS
-            badge: $BADGE
-            main-coverage: $MAIN_COVERAGE
-            main-badge: $MAIN_BADGE
+            redoc-links: ${{ env.REDOC_LINKS }}
+            coverage-links: ${{ env.COVERAGE_LINKS }}
+            badge: ${{ env.BADGE }}
+            main-coverage: ${{ env.MAIN_COVERAGE }}
+            main-badge: ${{ env.MAIN_BADGE }}
             github-token: ${{ secrets.GITHUB_TOKEN }}
    
 ```
