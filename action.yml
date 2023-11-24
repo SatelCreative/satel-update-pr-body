@@ -10,7 +10,7 @@ inputs:
     required: true
   shopify-links:
     description: Shopify models links for the PR
-    required: true    
+    required: false    
   coverage-links:
     description: Coverage links for the PR
     required: true
