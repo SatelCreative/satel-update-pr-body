@@ -30,6 +30,7 @@ runs:
     - name: Separate redoc links 
       shell: bash
       run: | 
+        echo "redoc-links=${{ inputs.redoc-links }}"
         api_links=$(echo "${{ inputs.redoc-links }}" | grep -o '\[${{ inputs.app-name }} - API\]\(([^)]*json)\)'|| echo "-")
         shopify_links=$(echo "${{ inputs.redoc-links }}" | grep -o '\[${{ inputs.app-name }} - Shopify resource models\]\(([^)]*json)\)' || echo "-")
         echo "api_link=$api_links" >> $GITHUB_ENV
