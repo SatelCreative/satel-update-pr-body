@@ -25,9 +25,13 @@ CURRENT_BODY=$(gh pr view $PR_NUMBER --json body -q .body)
 echo "DEBUG: CURRENT_BODY=$CURRENT_BODY"
 echo "DEBUG: BODY=$BODY"
 
+# Normalize the formatting of the new body for comparison
+NORMALIZED_BODY=$(echo "$BODY" | sed 's/ *//g' | tr -d '\n')
+echo "DEBUG: NORMALIZED_BODY=$NORMALIZED_BODY"
+
 # Check if newBody already exists in the current description
-#if ! echo -e "$CURRENT_BODY" | grep -xF "$BODY" >/dev/null; then
-if ! echo "$CURRENT_BODY" | grep -Fq "$BODY"; then
+if ! echo "$CURRENT_BODY" | sed 's/ *//g' | tr -d '\n' | grep -Fq "$NORMALIZED_BODY"; then
+#if ! echo "$CURRENT_BODY" | grep -Fq "$BODY"; then
   # Concatenate the new text to the existing description
   COMBINED_BODY="${CURRENT_BODY} ${BODY}"
 
