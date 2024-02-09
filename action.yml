@@ -1,33 +1,40 @@
 name: Update a Pull request's description
-description: Update a Pull request's description with the coverage and redoc links
+description: Update a Pull request's description with PR related links
 
 inputs:
   app-name:
     description: Name of the App
-    required: true
+    required: false
   redoc-links:
     description: Redoc links for the PR
-    required: true
+    required: false
   coverage-links:
     description: Coverage links for the PR
-    required: true
+    required: false
   badge:  
     description: Badge from the PR
-    required: true
+    required: false
   main-coverage:    
     description: Coverage from the main branch
-    required: true
+    required: false
   main-badge: 
     description: Badge from the main branch
-    required: true
+    required: false
   github-token:
-    description: GITHUB_TOKEN
+    description: github token 
     required: true  
+  body: 
+    description: Theme preview links 
+    required: false
       
 runs:
   using: "composite"
   steps:
+    - name: Check out repository
+      uses: actions/checkout@v4.1.1
+
     - name: Separate redoc links 
+      if: ${{ inputs.app-name != '' }}
       shell: bash
       run: | 
         api_links=$(echo "${{ inputs.redoc-links }}" | grep -o '\[${{ inputs.app-name }} - API\]\(([^)]*json)\)'|| echo "-")
@@ -35,8 +42,20 @@ runs:
         echo "api_link=$api_links" >> $GITHUB_ENV
         echo "shopify_link=$shopify_links" >> $GITHUB_ENV
 
-    - name: Add links in PR description
-      uses: SatelCreative/pr-body-action@1.0.0
-      with:
-        GITHUB_TOKEN: ${{ inputs.github-token }}
-        body: "\n|**App**|**Main branch**|**This PR**|**Redoc link**|**Resource models**|\n|----|---|----|----|----|\n| ${{ inputs.app-name }} | [![Coverage](${{ inputs.main-badge }})](${{ inputs.main-coverage }}) | [![Coverage](${{ inputs.badge }})](${{ inputs.coverage-links }}) | ${{ env.api_link }} | ${{ env.shopify_link }}\n \n"
+    # For BE 
+    - name: Run shell script of backend PRs
+      if: ${{ inputs.app-name != '' }}
+      env:
+        BODY: "\n\n\n|**App**|**Main branch**|**This PR**|**Redoc link**|**Resource models**|\n|----|---|----|----|----|\n| ${{ inputs.app-name }} | [![Coverage](${{ inputs.main-badge }})](${{ inputs.main-coverage }}) | [![Coverage](${{ inputs.badge }})](${{ inputs.coverage-links }}) | ${{ env.api_link }} | ${{ env.shopify_link }}\n \n"
+        GITHUB_TOKEN: ${{ inputs.github-token }} 
+      shell: bash
+      run: ${{ github.action_path }}/DescriptionUpdate.sh    
+
+    # For FE
+    - name: Run shell script for storefront PRs
+      if: ${{ inputs.body != '' }}
+      env:
+        BODY: "\n\n${{ inputs.body }}"
+        GITHUB_TOKEN: ${{ inputs.github-token }} 
+      shell: bash
+      run: ${{ github.action_path }}/DescriptionUpdate.sh      
