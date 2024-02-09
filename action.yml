@@ -55,7 +55,7 @@ runs:
     - name: Run shell script for storefront PRs
       if: ${{ inputs.body != '' }}
       env:
-        BODY: ${{ inputs.body }}
+        BODY: "\n\n${{ inputs.body }}"
         GITHUB_TOKEN: ${{ inputs.github-token }} 
       shell: bash
       run: ${{ github.action_path }}/DescriptionUpdate.sh      
