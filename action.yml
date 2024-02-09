@@ -46,7 +46,7 @@ runs:
     - name: Run shell script of backend PRs
       if: ${{ inputs.app-name != '' }}
       env:
-        BODY: "\n|**App**|**Main branch**|**This PR**|**Redoc link**|**Resource models**|\n|----|---|----|----|----|\n| ${{ inputs.app-name }} | [![Coverage](${{ inputs.main-badge }})](${{ inputs.main-coverage }}) | [![Coverage](${{ inputs.badge }})](${{ inputs.coverage-links }}) | ${{ env.api_link }} | ${{ env.shopify_link }}\n \n"
+        BODY: "\n\n\n|**App**|**Main branch**|**This PR**|**Redoc link**|**Resource models**|\n|----|---|----|----|----|\n| ${{ inputs.app-name }} | [![Coverage](${{ inputs.main-badge }})](${{ inputs.main-coverage }}) | [![Coverage](${{ inputs.badge }})](${{ inputs.coverage-links }}) | ${{ env.api_link }} | ${{ env.shopify_link }}\n \n"
         GITHUB_TOKEN: ${{ inputs.github-token }} 
       shell: bash
       run: ${{ github.action_path }}/DescriptionUpdate.sh    
