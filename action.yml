@@ -25,7 +25,7 @@ inputs:
     required: true  
   body: 
     description: Theme links 
-    required: false 
+    required: false
       
 runs:
   using: "composite"
@@ -43,7 +43,7 @@ runs:
         echo "shopify_link=$shopify_links" >> $GITHUB_ENV
 
     # For BE 
-    - name: Run shell script
+    - name: Run shell script of backend PRs
       if: ${{ ne(inputs.app-name, '') }}
       env:
         BODY: "\n|**App**|**Main branch**|**This PR**|**Redoc link**|**Resource models**|\n|----|---|----|----|----|\n| ${{ inputs.app-name }} | [![Coverage](${{ inputs.main-badge }})](${{ inputs.main-coverage }}) | [![Coverage](${{ inputs.badge }})](${{ inputs.coverage-links }}) | ${{ env.api_link }} | ${{ env.shopify_link }}\n \n"
@@ -52,11 +52,10 @@ runs:
       run: ${{ github.action_path }}/DescriptionUpdate.sh    
 
     # For FE
-      - name: Run shell script
+      - name: Run shell script for storefront PRs
       if: ${{ ne(inputs.body, '') }}
       env:
         BODY: ${{ inputs.body }}
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }} 
       shell: bash
       run: ${{ github.action_path }}/DescriptionUpdate.sh      
-
