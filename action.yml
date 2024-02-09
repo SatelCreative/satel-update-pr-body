@@ -53,7 +53,7 @@ runs:
 
     # For FE
     - name: Run shell script for storefront PRs
-      if: ${{ ne(inputs.body != '' }}
+      if: ${{ inputs.body != '' }}
       env:
         BODY: ${{ inputs.body }}
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }} 
