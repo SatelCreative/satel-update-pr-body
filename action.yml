@@ -34,7 +34,7 @@ runs:
       uses: actions/checkout@v4.1.1
 
     - name: Separate redoc links 
-      if: ${{ ne(inputs.app-name, '') }}
+      if: ${{ inputs.app-name != '' }}
       shell: bash
       run: | 
         api_links=$(echo "${{ inputs.redoc-links }}" | grep -o '\[${{ inputs.app-name }} - API\]\(([^)]*json)\)'|| echo "-")
