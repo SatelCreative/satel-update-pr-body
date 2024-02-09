@@ -44,7 +44,7 @@ runs:
 
     # For BE 
     - name: Run shell script of backend PRs
-      if: ${{ ne(inputs.app-name, '') }}
+      if: ${{ inputs.app-name != '' }}
       env:
         BODY: "\n|**App**|**Main branch**|**This PR**|**Redoc link**|**Resource models**|\n|----|---|----|----|----|\n| ${{ inputs.app-name }} | [![Coverage](${{ inputs.main-badge }})](${{ inputs.main-coverage }}) | [![Coverage](${{ inputs.badge }})](${{ inputs.coverage-links }}) | ${{ env.api_link }} | ${{ env.shopify_link }}\n \n"
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }} 
@@ -52,8 +52,8 @@ runs:
       run: ${{ github.action_path }}/DescriptionUpdate.sh    
 
     # For FE
-      - name: Run shell script for storefront PRs
-      if: ${{ ne(inputs.body, '') }}
+    - name: Run shell script for storefront PRs
+      if: ${{ ne(inputs.body != '' }}
       env:
         BODY: ${{ inputs.body }}
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }} 
