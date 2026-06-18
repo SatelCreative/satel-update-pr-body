@@ -31,7 +31,7 @@ runs:
   using: "composite"
   steps:
     - name: Check out repository
-      uses: actions/checkout@v4.1.1
+      uses: actions/checkout@v7.0.0
 
     - name: Separate redoc links 
       if: ${{ inputs.app-name != '' }}
